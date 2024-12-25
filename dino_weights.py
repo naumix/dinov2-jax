@@ -6,6 +6,8 @@ import functools
 
 from vit import DinoViT
 
+import numpy as np
+
 
 def load_vit_params(params_jax: dict, vit_pt: torch.nn.Module):
     jax_params_flat, jax_param_pytree = jax.tree_util.tree_flatten_with_path(params_jax)
@@ -77,7 +79,7 @@ def test_dino_vits():
     # JAX: forward pass
     image = jax.random.uniform(jax.random.PRNGKey(0), (1, 518, 518, 3))
     embed_jax = jax_vit_def.apply({"params": jax_params}, image, training=False)
-    embed_jax = onp.asarray(embed_jax["x_norm_patchtokens"])
+    embed_jax = np.asarray(embed_jax["x_norm_patchtokens"])
 
     # Torch: forward pass
     image_torch = torch.from_numpy(onp.asarray(image.transpose((0, 3, 1, 2)))).cuda()
